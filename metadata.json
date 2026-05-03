@@ -1,0 +1,6 @@
+{
+  "name": "Hadith Collection App",
+  "description": "A simple website that imports and displays hadiths from a JSON file.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
