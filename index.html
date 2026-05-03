@@ -517,6 +517,47 @@
   }
 
   /* ── TESTS && FORMS ── */
+  .diff-added {
+    color: #e53e3e;
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
+  .diff-removed {
+    cursor: help;
+    color: #e53e3e;
+    font-size: 1.1em;
+    margin: 0 0.1rem;
+  }
+  .test-writing-area {
+    width: 100%;
+    min-height: 120px;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    font-family: 'Amiri', serif;
+    font-size: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    resize: vertical;
+    direction: rtl;
+    color: var(--ink);
+  }
+  .test-writing-area:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2);
+  }
+  .correction-result {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #FFFDF7;
+    border: 1.5px dashed var(--gold);
+    border-radius: 8px;
+    font-size: 1.35rem;
+    line-height: 2;
+    color: var(--ink);
+    text-align: justify;
+  }
   .test-btn {
     background: var(--gold);
     color: var(--ink);
@@ -630,9 +671,16 @@
       <div class="bab-full-name" id="test-bab-title"></div>
     </div>
     
-    <div class="hadith-card" id="test-card-container" style="cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 2rem; padding: 2rem;" onclick="revealTestAnswer()">
+    <div class="hadith-card" id="test-card-container" style="cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 2rem; padding: 2rem;" onclick="revealTestAnswerCheck(event)">
       <div id="test-card-front" style="width: 100%; text-align: center;"></div>
-      <div id="test-card-back" style="width: 100%; display: none; text-align: center;"></div>
+      
+      <div id="test-writing-section" style="width: 100%; display: none; text-align: center;">
+        <textarea id="test-writing-input" class="test-writing-area" placeholder="اكتب نص الحديث هنا..." onclick="event.stopPropagation()"></textarea>
+        <button class="test-btn" style="margin-top: 1.5rem; width: 100%; max-width: 250px;" onclick="event.stopPropagation(); evaluateWriting()">تصحيح</button>
+      </div>
+      <div id="test-correction-result" class="correction-result" style="display: none; width: 100%;"></div>
+
+      <div id="test-card-back" style="width: 100%; display: none; text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);"></div>
       <div id="test-tap-hint" class="tap-hint" style="margin-top: 2rem;">انقر لإظهار الإجابة</div>
     </div>
 
@@ -655,6 +703,13 @@
         <select id="test-mode">
           <option value="sequential">اختبار مرتب</option>
           <option value="random">اختبار عشوائي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>طريقة الإجابة:</label>
+        <select id="test-answer-method">
+          <option value="without_writing">بدون كتابة</option>
+          <option value="with_writing">بكتابة</option>
         </select>
       </div>
       <div class="form-group">
@@ -856,6 +911,7 @@ document.addEventListener('keydown', e => {
    ★  TEST LOGIC  ★
    ════════════════════════════════════════════════════════ */
 let testMode = 'sequential';
+let testAnswerMethod = 'without_writing';
 let testFrontMode = 'show';
 let currentTestBabIndex = 0;
 let currentTestHadiths = [];
@@ -889,6 +945,7 @@ function exitTest() {
 
 function startTest() {
   testMode = document.getElementById('test-mode').value;
+  testAnswerMethod = document.getElementById('test-answer-method').value;
   testFrontMode = document.getElementById('test-front-type').value;
   currentTestBabIndex = parseInt(document.getElementById('test-start-bab').value);
   closeTestModal();
@@ -937,8 +994,119 @@ function renderTestCard() {
 
   document.getElementById('test-card-front').style.display = 'block';
   document.getElementById('test-card-back').style.display = 'none';
-  document.getElementById('test-tap-hint').style.display = 'block';
   document.getElementById('test-actions').style.display = 'none';
+
+  if (testAnswerMethod === 'with_writing') {
+    document.getElementById('test-writing-section').style.display = 'block';
+    document.getElementById('test-writing-input').value = '';
+    document.getElementById('test-correction-result').style.display = 'none';
+    document.getElementById('test-tap-hint').style.display = 'none';
+    document.getElementById('test-card-container').style.cursor = 'default';
+  } else {
+    document.getElementById('test-writing-section').style.display = 'none';
+    document.getElementById('test-correction-result').style.display = 'none';
+    document.getElementById('test-tap-hint').style.display = 'block';
+    document.getElementById('test-tap-hint').textContent = 'انقر لإظهار الإجابة';
+    document.getElementById('test-card-container').style.cursor = 'pointer';
+  }
+}
+
+function revealTestAnswerCheck(e) {
+  if (testAnswerMethod === 'with_writing') return;
+  revealTestAnswer();
+}
+
+function evaluateWriting() {
+  if (isAnswerRevealed) return;
+  const h = currentTestHadiths[currentTestHadithIndex];
+  const submitted = document.getElementById('test-writing-input').value;
+  
+  const diff = getWordDiff(h.content, submitted);
+  const diffHtml = renderDiffHTML(diff);
+  
+  document.getElementById('test-correction-result').innerHTML = `
+    <div style="font-size:0.9rem; color:var(--emerald); font-weight:bold; margin-bottom:0.5rem;">إجابتك بعد التصحيح:</div>
+    <div>${diffHtml}</div>
+  `;
+  document.getElementById('test-correction-result').style.display = 'block';
+  document.getElementById('test-writing-section').style.display = 'none';
+  
+  revealTestAnswer();
+}
+
+function normalizeArabic(text) {
+  if (!text) return '';
+  let t = text.replace(/[\u0617-\u061A\u064B-\u0652]/g, '');
+  t = t.replace(/[أإآ]/g, 'ا');
+  t = t.replace(/ة/g, 'ه');
+  t = t.replace(/ى/g, 'ي');
+  return t;
+}
+
+function getWordDiff(original, submitted) {
+  const origWords = original.replace(/[،.؛:()«»"']/g, ' ').trim().split(/\s+/).filter(w => w);
+  const subWords = submitted.replace(/[،.؛:()«»"']/g, ' ').trim().split(/\s+/).filter(w => w);
+  
+  const normOriginal = origWords.map(normalizeArabic);
+  const normSubmitted = subWords.map(normalizeArabic);
+  
+  const dp = Array(normOriginal.length + 1).fill(null).map(() => Array(normSubmitted.length + 1).fill(0));
+  for (let i = 1; i <= normOriginal.length; i++) {
+    for (let j = 1; j <= normSubmitted.length; j++) {
+      if (normOriginal[i - 1] === normSubmitted[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+  
+  let i = normOriginal.length;
+  let j = normSubmitted.length;
+  const result = [];
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && normOriginal[i - 1] === normSubmitted[j - 1]) {
+      result.unshift({ type: 'equal', value: subWords[j - 1] });
+      i--;
+      j--;
+    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+      result.unshift({ type: 'added', value: subWords[j - 1] });
+      j--;
+    } else if (i > 0 && (j === 0 || dp[i][j - 1] < dp[i - 1][j])) {
+      result.unshift({ type: 'removed', value: origWords[i - 1] });
+      i--;
+    }
+  }
+  
+  return result;
+}
+
+function renderDiffHTML(diff) {
+  let html = '';
+  let removedBuffer = [];
+
+  const flushRemoved = () => {
+    if (removedBuffer.length > 0) {
+      const tooltip = removedBuffer.join(' ');
+      html += ` <span class="diff-removed" title="${tooltip}">❌</span> `;
+      removedBuffer = [];
+    }
+  };
+
+  diff.forEach(item => {
+    if (item.type === 'removed') {
+      removedBuffer.push(item.value);
+    } else {
+      flushRemoved();
+      if (item.type === 'added') {
+        html += ` <span class="diff-added">${item.value}</span> `;
+      } else {
+        html += ` ${item.value} `;
+      }
+    }
+  });
+  flushRemoved();
+  return html.trim();
 }
 
 function revealTestAnswer() {
