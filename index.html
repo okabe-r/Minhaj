@@ -516,6 +516,46 @@
     opacity: 0.85;
   }
 
+  /* ── TESTS && FORMS ── */
+  .test-btn {
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 1.1rem;
+    padding: 0.75rem 2rem;
+    border-radius: 30px;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: none;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    transition: all 0.25s ease;
+  }
+  .test-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+  .settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: right;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+    font-weight: bold;
+  }
+  .form-group select {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    background: #fff;
+  }
+
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--parchment); }
@@ -556,6 +596,12 @@
   <!-- SCREEN 1: BAB LIST -->
   <div id="screen-babs" class="screen active">
     <div class="bismillah">﷽</div>
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <button class="test-btn" onclick="openTestModal()">
+        <span>اختبار</span>
+        <span style="font-size: 1.2rem; margin-right: 0.5rem;">📝</span>
+      </button>
+    </div>
     <p class="section-label">اختر الباب الذي تريد مراجعته</p>
     <div class="bab-grid" id="bab-grid"></div>
   </div>
@@ -574,6 +620,57 @@
     <div class="hadith-grid" id="hadith-grid"></div>
   </div>
 
+  <!-- SCREEN 3: TEST SCREEN -->
+  <div id="screen-test" class="screen">
+    <div class="nav-bar">
+      <button class="nav-btn" onclick="exitTest()">الخروج من الاختبار</button>
+    </div>
+    <div class="bab-title-bar">
+      <div class="bab-num-label" id="test-progress"></div>
+      <div class="bab-full-name" id="test-bab-title"></div>
+    </div>
+    
+    <div class="hadith-card" id="test-card-container" style="cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 2rem; padding: 2rem;" onclick="revealTestAnswer()">
+      <div id="test-card-front" style="width: 100%; text-align: center;"></div>
+      <div id="test-card-back" style="width: 100%; display: none; text-align: center;"></div>
+      <div id="test-tap-hint" class="tap-hint" style="margin-top: 2rem;">انقر لإظهار الإجابة</div>
+    </div>
+
+    <div id="test-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+      <button class="nav-btn" style="background: var(--gold); color: var(--ink);" onclick="retryTestHadith()">أعد الحديث</button>
+      <button class="nav-btn" id="test-next-btn" onclick="nextTestHadith()">الحديث التالي &#x2190;</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TEST MODAL -->
+<div class="modal-overlay" id="test-modal" onclick="closeTestModalOnOverlay(event)">
+  <div class="modal-box" style="max-width: 500px; padding: 2rem;">
+    <button class="modal-close" style="position: absolute; top: 1rem; left: 1rem; color: var(--ink); border-color: var(--border);" onclick="closeTestModal()">✕</button>
+    <h2 style="color: var(--emerald); text-align: center; margin-bottom: 1.5rem;">إعدادات الاختبار</h2>
+    <div class="settings-form">
+      <div class="form-group">
+        <label>نوع الاختبار:</label>
+        <select id="test-mode">
+          <option value="sequential">اختبار مرتب</option>
+          <option value="random">اختبار عشوائي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الوجه الأمامي:</label>
+        <select id="test-front-type">
+          <option value="show">إظهار الراوي</option>
+          <option value="hide">إخفاء الراوي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>البداية من الباب:</label>
+        <select id="test-start-bab"></select>
+      </div>
+      <button class="test-btn" style="width: 100%; margin-top: 1rem;" onclick="startTest()">ابدأ الاختبار</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL -->
@@ -635,6 +732,8 @@ function renderBabs() {
   BABS_ARRAY = getBabs();
   const grid = document.getElementById('bab-grid');
   grid.innerHTML = '';
+  const testSelect = document.getElementById('test-start-bab');
+  if (testSelect) testSelect.innerHTML = '';
   BABS_ARRAY.forEach((bab, index) => {
     const btn = document.createElement('button');
     btn.className = 'bab-btn';
@@ -645,6 +744,13 @@ function renderBabs() {
     `;
     btn.onclick = () => showBab(index);
     grid.appendChild(btn);
+
+    if (testSelect) {
+      const opt = document.createElement('option');
+      opt.value = index;
+      opt.textContent = `الباب ${toArabicNum(bab.number)}: ${bab.name}`;
+      testSelect.appendChild(opt);
+    }
   });
 }
 
@@ -739,7 +845,134 @@ function closeModalOnOverlay(e) {
   if (e.target === document.getElementById('modal')) closeModal();
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') {
+    closeModal();
+    if (typeof closeTestModal === 'function') closeTestModal();
+  }
+});
+
+/* ════════════════════════════════════════════════════════
+   ★  TEST LOGIC  ★
+   ════════════════════════════════════════════════════════ */
+let testMode = 'sequential';
+let testFrontMode = 'show';
+let currentTestBabIndex = 0;
+let currentTestHadiths = [];
+let currentTestHadithIndex = 0;
+let isAnswerRevealed = false;
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function openTestModal() {
+  document.getElementById('test-modal').classList.add('open');
+}
+
+function closeTestModal() {
+  document.getElementById('test-modal').classList.remove('open');
+}
+
+function closeTestModalOnOverlay(e) {
+  if (e.target === document.getElementById('test-modal')) closeTestModal();
+}
+
+function exitTest() {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById('screen-babs').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startTest() {
+  testMode = document.getElementById('test-mode').value;
+  testFrontMode = document.getElementById('test-front-type').value;
+  currentTestBabIndex = parseInt(document.getElementById('test-start-bab').value);
+  closeTestModal();
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById('screen-test').classList.add('active');
+  window.scrollTo(0, 0);
+  loadTestBab();
+}
+
+function loadTestBab() {
+  const bab = BABS_ARRAY[currentTestBabIndex];
+  currentTestHadiths = [...bab.hadiths];
+  if (testMode === 'random') {
+    shuffleArray(currentTestHadiths);
+  }
+  currentTestHadithIndex = 0;
+  renderTestCard();
+}
+
+function renderTestCard() {
+  const h = currentTestHadiths[currentTestHadithIndex];
+  const bab = BABS_ARRAY[currentTestBabIndex];
+  isAnswerRevealed = false;
+
+  document.getElementById('test-bab-title').textContent = 'الباب ' + toArabicNum(bab.number) + ' - ' + bab.name;
+  document.getElementById('test-progress').textContent = 'الحديث ' + toArabicNum(currentTestHadithIndex + 1) + ' من ' + toArabicNum(currentTestHadiths.length);
+
+  let frontHtml = '';
+  if (testFrontMode === 'show') {
+    frontHtml = `
+      <div class="hadith-card-sahabi" style="padding:0; margin-bottom:1rem;"><span class="sahabi-prefix">عن</span> ${h.sahabi}</div>
+      <div class="divider" style="margin: 1.5rem auto; width: 60px;"></div>
+      <button class="hint-btn" onclick="event.stopPropagation(); document.getElementById('test-card-hint').style.display='block'; this.style.display='none';">تلميح</button>
+      <div id="test-card-hint" class="hint-text-display" style="display:none; margin-top: 1.5rem; text-align: center;">${h.hint}</div>
+    `;
+  } else {
+    frontHtml = `<div class="hint-text-display" style="display:block; font-size: 1.2rem; background:transparent; border:none; text-align:center;">${h.hint}</div>`;
+  }
+  document.getElementById('test-card-front').innerHTML = frontHtml;
+
+  document.getElementById('test-card-back').innerHTML = `
+    <div style="font-size: 1.15rem; color: var(--emerald); font-weight: bold; margin-bottom: 0.3rem;">${h.sahabi}</div>
+    <div style="font-size: 0.85rem; color: var(--gold); margin-bottom: 1.5rem;">${h.rawy}</div>
+    <div style="font-size: 1.4rem; line-height: 2; color: var(--ink); text-align: justify; margin-bottom: 1rem;">${h.content}</div>
+  `;
+
+  document.getElementById('test-card-front').style.display = 'block';
+  document.getElementById('test-card-back').style.display = 'none';
+  document.getElementById('test-tap-hint').style.display = 'block';
+  document.getElementById('test-actions').style.display = 'none';
+}
+
+function revealTestAnswer() {
+  if (isAnswerRevealed) return;
+  isAnswerRevealed = true;
+  document.getElementById('test-card-front').style.display = 'none';
+  document.getElementById('test-card-back').style.display = 'block';
+  document.getElementById('test-tap-hint').style.display = 'none';
+  document.getElementById('test-actions').style.display = 'flex';
+  
+  const isLast = (currentTestHadithIndex === currentTestHadiths.length - 1);
+  const nextBtn = document.getElementById('test-next-btn');
+  if (isLast) {
+    if (currentTestBabIndex === BABS_ARRAY.length - 1) {
+      nextBtn.textContent = 'إنهاء الاختبار';
+      nextBtn.onclick = exitTest;
+    } else {
+      nextBtn.textContent = 'الباب التالي \u2190';
+      nextBtn.onclick = () => { currentTestBabIndex++; loadTestBab(); };
+    }
+  } else {
+    nextBtn.textContent = 'الحديث التالي \u2190';
+    nextBtn.onclick = nextTestHadith;
+  }
+}
+
+function nextTestHadith() {
+  currentTestHadithIndex++;
+  renderTestCard();
+}
+
+function retryTestHadith() {
+  renderTestCard();
+}
 
 function toggleRawy() {
   const val = document.getElementById('rawy-toggle').value;
