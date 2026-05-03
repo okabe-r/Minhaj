@@ -7,19 +7,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --parchment: #F5ECD7;
-    --parchment-dark: #EAD9BC;
-    --parchment-deep: #D4B896;
-    --ink: #2C1A0E;
-    --ink-light: #5C3D1E;
-    --emerald: #1B5E42;
-    --emerald-light: #2E8B63;
-    --emerald-pale: #E8F5EE;
-    --gold: #B8860B;
-    --gold-light: #DAA520;
-    --gold-pale: #FFF8E1;
-    --border: #C9A96E;
-    --shadow: rgba(44, 26, 14, 0.15);
+    --parchment: #0f172a;        
+    --parchment-dark: #1e293b;   
+    --parchment-deep: #334155;   
+    --ink: #f8fafc;              
+    --ink-light: #94a3b8;        
+    --emerald: #38bdf8;          
+    --emerald-light: #7dd3fc;    
+    --emerald-pale: #0c4a6e;     
+    --gold: #fbbf24;             
+    --gold-light: #fcd34d;       
+    --gold-pale: #1e293b;        
+    --border: #334155;           
+    --shadow: rgba(0, 0, 0, 0.4);
+    --card-bg: #1e293b;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,13 +32,13 @@
     min-height: 100vh;
     direction: rtl;
     background-image:
-      radial-gradient(circle at 20% 20%, rgba(184,134,11,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(27,94,66,0.06) 0%, transparent 50%),
-      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A96E' fill-opacity='0.12'%3E%3Cpath d='M30 0l3.5 6.06L30 5.25l-3.5.81L30 0zm0 60l3.5-6.06L30 54.75l-3.5-.81L30 60zM0 30l6.06-3.5L5.25 30l.81 3.5L0 30zm60 0l-6.06 3.5L54.75 30l-.81-3.5L60 30zM15 15l2.47 4.28L15 18.5l-2.47.78L15 15zm30 0l2.47 4.28L45 18.5l-2.47.78L45 15zm-30 30l2.47-4.28L15 41.5l-2.47-.78L15 45zm30 0l2.47-4.28L45 41.5l-2.47-.78L45 45z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      radial-gradient(circle at 20% 20%, rgba(251,191,36,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(56,189,248,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23334155' fill-opacity='0.15'%3E%3Cpath d='M30 0l3.5 6.06L30 5.25l-3.5.81L30 0zm0 60l3.5-6.06L30 54.75l-3.5-.81L30 60zM0 30l6.06-3.5L5.25 30l.81 3.5L0 30zm60 0l-6.06 3.5L54.75 30l-.81-3.5L60 30zM15 15l2.47 4.28L15 18.5l-2.47.78L15 15zm30 0l2.47 4.28L45 18.5l-2.47.78L45 15zm-30 30l2.47-4.28L15 41.5l-2.47-.78L15 45zm30 0l2.47-4.28L45 41.5l-2.47-.78L45 45z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   .header {
-    background: linear-gradient(135deg, var(--emerald) 0%, #0D3D28 100%);
+    background: linear-gradient(135deg, var(--emerald-pale) 0%, #0f172a 100%);
     padding: 2rem 2rem 1.5rem;
     text-align: center;
     border-bottom: 3px solid var(--gold);
@@ -62,10 +63,10 @@
   }
 
   .header h1 {
-    color: #FFF8E1;
+    color: var(--ink);
     font-size: 2.1rem;
     font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 8px var(--shadow);
     position: relative;
   }
 
@@ -102,7 +103,7 @@
   }
 
   .bab-btn {
-    background: linear-gradient(135deg, #fff 60%, var(--gold-pale));
+    background: linear-gradient(135deg, var(--card-bg) 60%, var(--parchment-deep));
     border: 1.5px solid var(--border);
     border-radius: 12px;
     padding: 1.4rem 1.6rem;
@@ -127,7 +128,7 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px var(--shadow);
     border-color: var(--gold-light);
-    background: linear-gradient(135deg, #fff 40%, var(--gold-pale));
+    background: linear-gradient(135deg, var(--card-bg) 40%, var(--border));
   }
 
   .bab-number {
@@ -160,9 +161,9 @@
   }
 
   .settings-dropdown select {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(218, 165, 32, 0.5); /* var(--gold) */
-    color: #FFF8E1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--ink);
     font-family: 'Amiri', serif;
     font-size: 0.95rem;
     padding: 0.3rem 0.6rem;
@@ -179,8 +180,8 @@
   }
 
   .settings-dropdown select option {
-    background: var(--emerald);
-    color: #FFF8E1;
+    background: var(--card-bg);
+    color: var(--ink);
   }
 
   body.hide-rawy .hadith-card-sahabi,
@@ -213,8 +214,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: var(--emerald);
-    color: #FFF8E1;
+    background: var(--emerald-light);
+    color: #0f172a;
     border: none;
     border-radius: 8px;
     padding: 0.55rem 1.2rem;
@@ -234,7 +235,7 @@
   }
 
   .bab-title-bar {
-    background: linear-gradient(135deg, var(--emerald-pale), #fff);
+    background: linear-gradient(135deg, var(--emerald-pale), var(--card-bg));
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1rem 1.4rem;
@@ -264,7 +265,7 @@
 
   /* ── HADITH CARD ── */
   .hadith-card {
-    background: #FFFDF7;
+    background: var(--card-bg);
     border: 1.5px solid var(--border);
     border-radius: 14px;
     padding: 1.3rem 1.3rem 1rem;
@@ -293,8 +294,8 @@
     position: absolute;
     top: 0.7rem;
     left: 0.8rem;
-    background: var(--emerald);
-    color: #FFF8E1;
+    background: var(--emerald-light);
+    color: #0f172a;
     font-size: 0.72rem;
     font-weight: 700;
     padding: 2px 8px;
@@ -343,7 +344,7 @@
 
   .hint-btn:hover:not(:disabled) {
     background: var(--gold);
-    color: #fff;
+    color: #0f172a;
   }
 
   .hint-btn:disabled {
@@ -380,7 +381,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(44, 26, 14, 0.55);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -391,7 +392,7 @@
   .modal-overlay.open { display: flex; }
 
   .modal-box {
-    background: #FFFDF7;
+    background: var(--card-bg);
     border: 2px solid var(--border);
     border-radius: 16px;
     max-width: 680px;
@@ -399,7 +400,7 @@
     max-height: 88vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 60px rgba(44,26,14,0.35);
+    box-shadow: 0 20px 60px var(--shadow);
     animation: modalIn 0.3s ease;
   }
 
@@ -409,7 +410,7 @@
   }
 
   .modal-header {
-    background: linear-gradient(135deg, var(--emerald) 0%, #0D3D28 100%);
+    background: linear-gradient(135deg, var(--emerald-pale) 0%, #0f172a 100%);
     padding: 1.2rem 1.5rem 1rem;
     border-radius: 14px 14px 0 0;
     display: flex;
@@ -423,20 +424,20 @@
 
   .modal-label {
     font-size: 0.78rem;
-    color: rgba(255,248,225,0.65);
+    color: var(--ink-light);
     margin-bottom: 0.15rem;
   }
 
   .modal-sahabi-name {
     font-size: 1.35rem;
     font-weight: 700;
-    color: #FFF8E1;
+    color: var(--ink);
   }
 
   .modal-close {
     background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,0.25);
-    color: #FFF8E1;
+    color: var(--ink);
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -456,8 +457,8 @@
 
   .modal-id-badge {
     display: inline-block;
-    background: var(--emerald);
-    color: #FFF8E1;
+    background: var(--emerald-light);
+    color: #0f172a;
     font-size: 0.78rem;
     padding: 3px 12px;
     border-radius: 20px;
@@ -535,7 +536,7 @@
     padding: 1rem;
     font-family: 'Amiri', serif;
     font-size: 1.25rem;
-    background: #fff;
+    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     resize: vertical;
@@ -550,7 +551,7 @@
   .correction-result {
     margin-top: 1.5rem;
     padding: 1.5rem;
-    background: #FFFDF7;
+    background: var(--card-bg);
     border: 1.5px dashed var(--gold);
     border-radius: 8px;
     font-size: 1.35rem;
@@ -560,12 +561,12 @@
   }
   .test-btn {
     background: var(--gold);
-    color: var(--ink);
+    color: #0f172a;
     font-size: 1.1rem;
     padding: 0.75rem 2rem;
     border-radius: 30px;
     font-weight: 700;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px var(--shadow);
     border: none;
     cursor: pointer;
     font-family: 'Amiri', serif;
@@ -594,7 +595,8 @@
     border: 1px solid var(--border);
     font-family: 'Amiri', serif;
     font-size: 1rem;
-    background: #fff;
+    background: var(--card-bg);
+    color: var(--ink);
   }
 
   /* scrollbar */
@@ -685,7 +687,7 @@
     </div>
 
     <div id="test-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
-      <button class="nav-btn" style="background: var(--gold); color: var(--ink);" onclick="retryTestHadith()">أعد الحديث</button>
+      <button class="nav-btn" style="background: var(--gold); color: #0f172a;" onclick="retryTestHadith()">أعد الحديث</button>
       <button class="nav-btn" id="test-next-btn" onclick="nextTestHadith()">الحديث التالي &#x2190;</button>
     </div>
   </div>
