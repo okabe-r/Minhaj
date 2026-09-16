@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الْمِنْهَاجُ مِنْ مِيرَاثِ النُّبُوَّة</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --parchment: #F5ECD7;
@@ -20,12 +22,17 @@
     --gold-pale: #FFF8E1;
     --border: #C9A96E;
     --shadow: rgba(44, 26, 14, 0.15);
+
+    /* ألوان التمييز والتلوين المعتمدة للنصوص */
+    --book-red: #c00000;    /* الروايات الأخرى، الزيادات، التعليقات */
+    --book-navy: #002060;   /* السند، الصحابي، الآيات القرآنية */
+    --book-blue: #0070c0;   /* الروايات الفرعية والألفاظ المخصوصة */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Amiri', 'Scheherazade New', serif;
+    font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', serif;
     background-color: var(--parchment);
     color: var(--ink);
     min-height: 100vh;
@@ -36,9 +43,10 @@
       url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A96E' fill-opacity='0.12'%3E%3Cpath d='M30 0l3.5 6.06L30 5.25l-3.5.81L30 0zm0 60l3.5-6.06L30 54.75l-3.5-.81L30 60zM0 30l6.06-3.5L5.25 30l.81 3.5L0 30zm60 0l-6.06 3.5L54.75 30l-.81-3.5L60 30zM15 15l2.47 4.28L15 18.5l-2.47.78L15 15zm30 0l2.47 4.28L45 18.5l-2.47.78L45 15zm-30 30l2.47-4.28L15 41.5l-2.47-.78L15 45zm30 0l2.47-4.28L45 41.5l-2.47-.78L45 45z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
+  /* ── الترويسة الرئيسية ── */
   .header {
     background: linear-gradient(135deg, var(--emerald) 0%, #0D3D28 100%);
-    padding: 2rem 2rem 1.5rem;
+    padding: 2.2rem 2rem 1.6rem;
     text-align: center;
     border-bottom: 3px solid var(--gold);
     position: relative;
@@ -63,17 +71,41 @@
 
   .header h1 {
     color: #FFF8E1;
-    font-size: 2.1rem;
+    font-size: 2.3rem;
     font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
     position: relative;
   }
 
-  .header-subtitle {
-    color: rgba(255,248,225,0.7);
+  .settings-dropdown {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10;
+  }
+
+  .settings-dropdown select {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(218, 165, 32, 0.6);
+    color: #FFF8E1;
+    font-family: 'Amiri', serif;
     font-size: 0.95rem;
-    margin-top: 0.3rem;
-    font-style: italic;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+  }
+
+  .settings-dropdown select:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--gold-light);
+  }
+
+  .settings-dropdown select option {
+    background: var(--emerald);
+    color: #FFF8E1;
   }
 
   .main-container {
@@ -82,27 +114,41 @@
     padding: 2rem 1.5rem;
   }
 
-  /* ── BAB LIST SCREEN ── */
+  /* ── إدارة الشاشات والتحويلات ── */
   .screen { display: none; }
-  .screen.active { display: block; }
+  .screen.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .bismillah {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    opacity: 0.9;
+  }
 
   .section-label {
     text-align: center;
     color: var(--emerald);
-    font-size: 1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
     margin-bottom: 1.5rem;
-    letter-spacing: 0.1em;
-    opacity: 0.8;
+    letter-spacing: 0.05em;
   }
 
-  .bab-grid {
+  .grid-layout {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.2rem;
+    gap: 1.3rem;
   }
 
-  .bab-btn {
-    background: linear-gradient(135deg, #fff 60%, var(--gold-pale));
+  /* ── بطاقات الأبواب ── */
+  .card-btn {
+    background: linear-gradient(135deg, #ffffff 60%, var(--gold-pale));
     border: 1.5px solid var(--border);
     border-radius: 12px;
     padding: 1.4rem 1.6rem;
@@ -114,7 +160,7 @@
     box-shadow: 0 2px 8px var(--shadow);
   }
 
-  .bab-btn::before {
+  .card-btn::before {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -123,82 +169,35 @@
     border-radius: 0 12px 12px 0;
   }
 
-  .bab-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow);
+  .card-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px var(--shadow);
     border-color: var(--gold-light);
-    background: linear-gradient(135deg, #fff 40%, var(--gold-pale));
+    background: linear-gradient(135deg, #ffffff 30%, var(--gold-pale));
   }
 
-  .bab-number {
-    font-size: 0.78rem;
+  .card-btn-subtitle {
+    font-size: 0.85rem;
     color: var(--gold);
     font-weight: 700;
     margin-bottom: 0.4rem;
-    letter-spacing: 0.05em;
   }
 
-  .bab-name {
-    font-size: 1.05rem;
+  .card-btn-title {
+    font-size: 1.18rem;
     color: var(--ink);
     line-height: 1.65;
     font-weight: 700;
   }
 
-  .bab-count {
+  .card-btn-desc {
     margin-top: 0.6rem;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--emerald);
-    opacity: 0.8;
+    font-weight: 600;
   }
 
-  .settings-dropdown {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 10;
-  }
-
-  .settings-dropdown select {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(218, 165, 32, 0.5); /* var(--gold) */
-    color: #FFF8E1;
-    font-family: 'Amiri', serif;
-    font-size: 0.95rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
-    backdrop-filter: blur(4px);
-    transition: all 0.2s ease;
-  }
-
-  .settings-dropdown select:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: var(--gold-light);
-  }
-
-  .settings-dropdown select option {
-    background: var(--emerald);
-    color: #FFF8E1;
-  }
-
-  body.hide-rawy .hadith-card-sahabi,
-  body.hide-rawy .divider,
-  body.hide-rawy .hint-btn {
-    display: none !important;
-  }
-
-  body.hide-rawy .hint-text-display {
-    display: block !important;
-    margin-top: 0 !important;
-  }
-
-  body.hide-rawy .hadith-card {
-    padding-top: 2.8rem;
-  }
-
-  /* ── HADITH LIST SCREEN ── */
+  /* ── أشرطة التنقل والعناوين ── */
   .nav-bar {
     display: flex;
     justify-content: center;
@@ -217,61 +216,70 @@
     color: #FFF8E1;
     border: none;
     border-radius: 8px;
-    padding: 0.55rem 1.2rem;
+    padding: 0.6rem 1.4rem;
     font-family: 'Amiri', serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s, opacity 0.2s;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
 
-  .nav-btn:hover:not(:disabled) { background: var(--emerald-light); }
+  .nav-btn:hover:not(:disabled) {
+    background: var(--emerald-light);
+    transform: translateY(-1px);
+  }
 
   .nav-btn:disabled {
     background: #9ca3af;
     color: #f3f4f6;
     cursor: not-allowed;
-    opacity: 0.8;
+    box-shadow: none;
   }
 
-  .bab-title-bar {
-    background: linear-gradient(135deg, var(--emerald-pale), #fff);
+  .title-bar {
+    background: linear-gradient(135deg, var(--emerald-pale), #ffffff);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.4rem;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
     margin-bottom: 1.8rem;
     text-align: center;
+    box-shadow: 0 2px 8px var(--shadow);
   }
 
-  .bab-title-bar .bab-num-label {
-    font-size: 0.8rem;
+  .title-bar-label {
+    font-size: 0.95rem;
     color: var(--gold);
     font-weight: 700;
   }
 
-  .bab-title-bar .bab-full-name {
-    font-size: 1.15rem;
+  .title-bar-name {
+    font-size: 1.35rem;
     color: var(--emerald);
     font-weight: 700;
     line-height: 1.7;
     margin-top: 0.2rem;
   }
 
+  /* ── شبكة بطاقات الأحاديث ── */
   .hadith-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.3rem;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.4rem;
   }
 
-  /* ── HADITH CARD ── */
   .hadith-card {
     background: #FFFDF7;
     border: 1.5px solid var(--border);
     border-radius: 14px;
-    padding: 1.3rem 1.3rem 1rem;
+    padding: 1.4rem 1.4rem 1.1rem;
     position: relative;
-    box-shadow: 0 2px 10px var(--shadow);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 3px 12px var(--shadow);
+    transition: transform 0.25s, box-shadow 0.25s;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .hadith-card::after {
@@ -281,7 +289,7 @@
     border: 1px solid var(--parchment-deep);
     border-radius: 10px;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 
   .hadith-card:hover {
@@ -291,54 +299,61 @@
 
   .hadith-id-badge {
     position: absolute;
-    top: 0.7rem;
-    left: 0.8rem;
+    top: 0.8rem;
+    left: 0.9rem;
     background: var(--emerald);
     color: #FFF8E1;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 20px;
     font-family: 'Amiri', serif;
     letter-spacing: 0.03em;
   }
 
   .hadith-card-sahabi {
-    font-size: 1.18rem;
+    font-size: 1.22rem;
     font-weight: 700;
     color: var(--ink);
-    margin-bottom: 0.5rem;
-    padding-left: 2.5rem;
-    line-height: 1.5;
+    margin-bottom: 0.6rem;
+    padding-left: 3rem;
+    line-height: 1.6;
+    text-align: right;
   }
 
   .sahabi-prefix {
     color: var(--gold);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 400;
     display: block;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.15rem;
   }
 
   .divider {
     height: 1px;
     background: linear-gradient(to left, transparent, var(--border), transparent);
-    margin: 0.7rem 0;
+    margin: 0.8rem 0;
   }
 
-  .hint-section { margin-top: 0.6rem; }
+  .hint-section {
+    margin-top: 0.6rem;
+    text-align: right;
+  }
 
   .hint-btn {
     background: var(--gold-pale);
     border: 1px solid var(--gold);
     color: var(--gold);
     font-family: 'Amiri', serif;
-    font-size: 0.9rem;
-    padding: 0.3rem 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.35rem 1rem;
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
   }
 
   .hint-btn:hover:not(:disabled) {
@@ -348,44 +363,123 @@
 
   .hint-btn:disabled {
     cursor: default;
-    opacity: 1;
+    background: var(--gold-pale);
+    border-style: dashed;
+  }
+
+  .test-inline-btn {
+    background: var(--emerald-pale);
+    border: 1px solid var(--emerald);
+    color: var(--emerald);
+    font-family: 'Amiri', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.35rem 1.1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+
+  .test-inline-btn:hover {
+    background: var(--emerald);
+    color: #fff;
   }
 
   .hint-text-display {
     display: none;
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     color: var(--ink-light);
-    font-style: italic;
-    line-height: 1.7;
+    line-height: 1.8;
     background: var(--gold-pale);
-    border: 1px dashed var(--gold);
-    border-radius: 8px;
-    padding: 0.55rem 0.75rem;
-    margin-top: 0.5rem;
+    border: 1.5px dashed var(--gold);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    margin-top: 0.7rem;
+    text-align: justify;
   }
 
-  .hint-text-display.shown { display: block; }
+  .hint-text-display.shown { display: block; animation: fadeIn 0.25s ease; }
 
   .tap-hint {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--emerald);
-    opacity: 0.6;
-    margin-top: 0.8rem;
+    opacity: 0.75;
+    margin-top: 0.9rem;
     text-align: center;
     font-style: italic;
   }
 
-  /* ── MODAL ── */
+  /* عند تفعيل وضع إخفاء الصحابي والراوي */
+  body.hide-rawy .hadith-card-sahabi,
+  body.hide-rawy .hadith-card .divider,
+  body.hide-rawy .hint-btn {
+    display: none !important;
+  }
+
+  body.hide-rawy .hint-text-display {
+    display: block !important;
+    margin-top: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0.2rem 0 !important;
+    font-size: 1.1rem !important;
+  }
+
+  /* ── تنسيقات النصوص النبوية الملونة ── */
+  .hadith-text-rendered {
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-size: 1.28rem;
+    line-height: 2.25;
+    color: #1a1a1a;
+    text-align: justify;
+    direction: rtl;
+    word-spacing: 1px;
+  }
+
+  .hadith-text-rendered strong,
+  .hadith-text-rendered b {
+    font-weight: 700;
+    color: #000000;
+  }
+
+  .hadith-text-rendered .text-red {
+    color: var(--book-red) !important;
+    font-weight: normal;
+  }
+
+  .hadith-text-rendered .text-navy {
+    color: var(--book-navy) !important;
+    font-weight: bold;
+  }
+
+  .hadith-text-rendered .text-blue {
+    color: var(--book-blue) !important;
+  }
+
+  .quran-ayah {
+    color: var(--book-navy);
+    font-weight: bold;
+    padding: 0 0.15rem;
+  }
+
+  .auto-sanad {
+    color: var(--book-navy);
+    font-weight: bold;
+  }
+
+  /* ── النافذة المنبثقة لعرض الحديث ── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(44, 26, 14, 0.55);
+    background: rgba(44, 26, 14, 0.65);
     z-index: 1000;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(4px);
   }
 
   .modal-overlay.open { display: flex; }
@@ -394,228 +488,229 @@
     background: #FFFDF7;
     border: 2px solid var(--border);
     border-radius: 16px;
-    max-width: 680px;
+    max-width: 760px;
     width: 100%;
     max-height: 88vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 60px rgba(44,26,14,0.35);
-    animation: modalIn 0.3s ease;
+    box-shadow: 0 20px 60px rgba(44,26,14,0.4);
+    animation: modalIn 0.28s ease;
   }
 
   @keyframes modalIn {
-    from { transform: scale(0.92) translateY(20px); opacity: 0; }
+    from { transform: scale(0.93) translateY(18px); opacity: 0; }
     to { transform: scale(1) translateY(0); opacity: 1; }
   }
 
   .modal-header {
     background: linear-gradient(135deg, var(--emerald) 0%, #0D3D28 100%);
-    padding: 1.2rem 1.5rem 1rem;
+    padding: 1.2rem 1.6rem;
     border-radius: 14px 14px 0 0;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
+    align-items: center;
     border-bottom: 2px solid var(--gold);
   }
 
   .modal-sahabi-info { flex: 1; }
 
   .modal-label {
-    font-size: 0.78rem;
-    color: rgba(255,248,225,0.65);
-    margin-bottom: 0.15rem;
+    font-size: 0.8rem;
+    color: rgba(255,248,225,0.7);
+    margin-bottom: 0.2rem;
   }
 
   .modal-sahabi-name {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: #FFF8E1;
   }
 
   .modal-close {
     background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.3);
     color: #FFF8E1;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1rem;
-    flex-shrink: 0;
+    font-size: 1.1rem;
     transition: background 0.2s;
-    font-family: sans-serif;
   }
 
-  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
 
-  .modal-body { padding: 1.5rem; }
+  .modal-body { padding: 1.8rem; }
 
   .modal-id-badge {
     display: inline-block;
     background: var(--emerald);
     color: #FFF8E1;
-    font-size: 0.78rem;
-    padding: 3px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 14px;
     border-radius: 20px;
-    margin-bottom: 1rem;
-  }
-
-  .hadith-content-text {
-    font-size: 1.15rem;
-    line-height: 2;
-    color: var(--ink);
-    text-align: justify;
-  }
-
-  .hadith-content-text strong {
-    color: var(--emerald);
+    margin-bottom: 1.2rem;
   }
 
   .modal-rawy {
-    margin-top: 1.2rem;
-    padding-top: 0.8rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--parchment-deep);
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--ink-light);
-    opacity: 0.75;
-    text-align: left;
-    direction: rtl;
+    font-weight: bold;
+    text-align: right;
   }
 
   .modal-hint-box {
     background: var(--gold-pale);
     border: 1px dashed var(--gold);
     border-radius: 10px;
-    padding: 0.7rem 1rem;
-    margin-top: 1rem;
-    font-size: 0.92rem;
+    padding: 0.8rem 1.1rem;
+    margin-top: 1.2rem;
+    font-size: 0.98rem;
     color: var(--ink-light);
-    font-style: italic;
-    line-height: 1.7;
+    line-height: 1.8;
   }
 
   .modal-hint-label {
     font-weight: 700;
     color: var(--gold);
-    font-style: normal;
     display: block;
     margin-bottom: 0.2rem;
-    font-size: 0.82rem;
   }
 
-  /* bismillah decoration */
-  .bismillah {
-    text-align: center;
-    color: var(--gold);
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.85;
-  }
-
-  /* ── TESTS && FORMS ── */
+  /* ── شاشة الاختبار ومقارنة الكلمات ── */
   .diff-added {
-    color: #e53e3e;
+    color: #6f2da8;
     text-decoration: line-through;
-    opacity: 0.8;
+    opacity: 0.85;
+    background: rgba(111, 45, 168, 0.08);
+    padding: 0 4px;
+    border-radius: 3px;
   }
+
   .diff-removed {
-    cursor: help;
+    cursor: pointer;
     color: #e53e3e;
     font-size: 1.1em;
-    margin: 0 0.1rem;
+    margin: 0 0.15rem;
+    display: inline-block;
   }
+
+  .diff-removed-text {
+    display: none;
+    font-size: 0.9em;
+    background: #fff0f0;
+    border: 1px dashed #e53e3e;
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+    margin: 0 0.2rem;
+  }
+
+  .diff-removed.expanded .diff-removed-text { display: inline; }
+  .diff-removed.expanded .diff-removed-icon { display: none; }
+
   .test-writing-area {
     width: 100%;
-    min-height: 120px;
+    min-height: 140px;
     margin-top: 1.5rem;
-    padding: 1rem;
-    font-family: 'Amiri', serif;
-    font-size: 1.25rem;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 1.2rem;
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-size: 1.35rem;
+    line-height: 2;
+    background: #ffffff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
     resize: vertical;
     direction: rtl;
     color: var(--ink);
   }
+
   .test-writing-area:focus {
     outline: none;
     border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.25);
   }
+
   .correction-result {
     margin-top: 1.5rem;
     padding: 1.5rem;
     background: #FFFDF7;
     border: 1.5px dashed var(--gold);
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1.35rem;
-    line-height: 2;
+    line-height: 2.2;
     color: var(--ink);
     text-align: justify;
   }
+
   .test-btn {
     background: var(--gold);
     color: var(--ink);
-    font-size: 1.1rem;
-    padding: 0.75rem 2rem;
+    font-size: 1.15rem;
+    padding: 0.75rem 2.2rem;
     border-radius: 30px;
     font-weight: 700;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
     border: none;
     cursor: pointer;
     font-family: 'Amiri', serif;
     transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
+
   .test-btn:hover {
     background: var(--gold-light);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
   }
+
   .settings-form {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
     text-align: right;
   }
+
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--ink);
     font-weight: bold;
+    font-size: 1.05rem;
   }
+
   .form-group select {
     width: 100%;
-    padding: 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
+    padding: 0.65rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
     font-family: 'Amiri', serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     background: #fff;
+    outline: none;
   }
 
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar { width: 7px; }
   ::-webkit-scrollbar-track { background: var(--parchment); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-  @media (max-width: 600px) {
-    .settings-dropdown {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-    }
-    .settings-dropdown select {
-      font-size: 0.85rem;
-      padding: 0.2rem 0.4rem;
-    }
-    .header h1 { font-size: 1.5rem; }
-    .main-container { padding: 1.2rem 1rem; }
+  @media (max-width: 650px) {
+    .settings-dropdown { position: static; margin-bottom: 1rem; }
+    .header h1 { font-size: 1.65rem; }
+    .main-container { padding: 1.2rem 0.8rem; }
     .hadith-grid { grid-template-columns: 1fr; }
-    .bab-grid { grid-template-columns: 1fr; }
+    .grid-layout { grid-template-columns: 1fr; }
+    .modal-body { padding: 1.2rem; }
+    .hadith-text-rendered { font-size: 1.15rem; line-height: 2; }
   }
 </style>
 </head>
@@ -623,9 +718,9 @@
 
 <header class="header">
   <div class="settings-dropdown">
-    <select id="rawy-toggle" onchange="toggleRawy()">
-      <option value="show">إظهار الراوي</option>
-      <option value="hide">إخفاء الراوي</option>
+    <select id="front-toggle" onchange="toggleFrontView()">
+      <option value="show">إظهار الصحابي</option>
+      <option value="hide">إخفاء الصحابي</option>
     </select>
   </div>
   <div class="header-ornament">— ✦ —</div>
@@ -634,54 +729,56 @@
 
 <div class="main-container">
 
-  <!-- SCREEN 1: BAB LIST -->
+  <!-- الشاشة 1: قائمة الأبواب كاملة -->
   <div id="screen-babs" class="screen active">
     <div class="bismillah">﷽</div>
     <div style="text-align: center; margin-bottom: 2rem;">
       <button class="test-btn" onclick="openTestModal()">
         <span>اختبار</span>
-        <span style="font-size: 1.2rem; margin-right: 0.5rem;">📝</span>
+        <span style="font-size: 1.2rem;">📝</span>
       </button>
     </div>
     <p class="section-label">اختر الباب الذي تريد مراجعته</p>
-    <div class="bab-grid" id="bab-grid"></div>
+    <div class="grid-layout" id="babs-grid"></div>
   </div>
 
-  <!-- SCREEN 2: HADITH CARDS -->
+  <!-- الشاشة 2: قائمة الأحاديث داخل الباب المختار مباشرة -->
   <div id="screen-hadith" class="screen">
     <div class="nav-bar">
       <button class="nav-btn" id="prev-bab-btn" onclick="goPrevBab()">&#x2192; الباب السابق</button>
-      <button class="nav-btn" onclick="goBack()">العودة إلى الأبواب</button>
+      <button class="nav-btn" onclick="goBackToBabs()">العودة إلى الأبواب</button>
       <button class="nav-btn" id="next-bab-btn" onclick="goNextBab()">الباب التالي &#x2190;</button>
     </div>
-    <div class="bab-title-bar">
-      <div class="bab-num-label" id="detail-bab-num"></div>
-      <div class="bab-full-name" id="detail-bab-name"></div>
+    <div class="title-bar">
+      <div class="title-bar-label" id="detail-bab-num"></div>
+      <div class="title-bar-name" id="detail-bab-name"></div>
     </div>
     <div class="hadith-grid" id="hadith-grid"></div>
   </div>
 
-  <!-- SCREEN 3: TEST SCREEN -->
+  <!-- الشاشة 3: شاشة الاختبار والتسميع الفردي أو الجماعي -->
   <div id="screen-test" class="screen">
     <div class="nav-bar">
       <button class="nav-btn" onclick="exitTest()">الخروج من الاختبار</button>
     </div>
-    <div class="bab-title-bar">
-      <div class="bab-num-label" id="test-progress"></div>
-      <div class="bab-full-name" id="test-bab-title"></div>
+    <div class="title-bar">
+      <div class="title-bar-label" id="test-progress"></div>
+      <div class="title-bar-name" id="test-bab-title"></div>
     </div>
     
-    <div class="hadith-card" id="test-card-container" style="cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 2rem; padding: 2rem;" onclick="revealTestAnswerCheck(event)">
+    <div class="hadith-card" id="test-card-container" style="cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 1.5rem; padding: 2rem;" onclick="revealTestAnswerCheck(event)">
       <div id="test-card-front" style="width: 100%; text-align: center;"></div>
       
       <div id="test-writing-section" style="width: 100%; display: none; text-align: center;">
         <textarea id="test-writing-input" class="test-writing-area" placeholder="اكتب نص الحديث هنا..." onclick="event.stopPropagation()"></textarea>
-        <button class="test-btn" style="margin-top: 1.5rem; width: 100%; max-width: 250px;" onclick="event.stopPropagation(); evaluateWriting()">تصحيح</button>
+        <button class="test-btn" style="margin-top: 1.5rem; width: 100%; max-width: 250px; justify-content: center;" onclick="event.stopPropagation(); evaluateWriting()">تصحيح</button>
       </div>
+      
       <div id="test-correction-result" class="correction-result" style="display: none; width: 100%;"></div>
 
-      <div id="test-card-back" style="width: 100%; display: none; text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);"></div>
-      <div id="test-tap-hint" class="tap-hint" style="margin-top: 2rem;">انقر لإظهار الإجابة</div>
+      <div id="test-card-back" style="width: 100%; display: none; text-align: right; margin-top: 2rem; padding-top: 1.8rem; border-top: 1.5px solid var(--border);"></div>
+      
+      <div id="test-tap-hint" class="tap-hint" style="margin-top: 1.8rem;">انقر لإظهار الإجابة</div>
     </div>
 
     <div id="test-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
@@ -692,7 +789,7 @@
 
 </div>
 
-<!-- TEST MODAL -->
+<!-- نافذة إعدادات الاختبار -->
 <div class="modal-overlay" id="test-modal" onclick="closeTestModalOnOverlay(event)">
   <div class="modal-box" style="max-width: 500px; padding: 2rem;">
     <button class="modal-close" style="position: absolute; top: 1rem; left: 1rem; color: var(--ink); border-color: var(--border);" onclick="closeTestModal()">✕</button>
@@ -715,20 +812,20 @@
       <div class="form-group">
         <label>الوجه الأمامي:</label>
         <select id="test-front-type">
-          <option value="show">إظهار الراوي</option>
-          <option value="hide">إخفاء الراوي</option>
+          <option value="show">إظهار الصحابي</option>
+          <option value="hide">إخفاء الصحابي (البدء بالتلميح)</option>
         </select>
       </div>
       <div class="form-group">
-        <label>البداية من الباب:</label>
+        <label>نطاق الاختبار:</label>
         <select id="test-start-bab"></select>
       </div>
-      <button class="test-btn" style="width: 100%; margin-top: 1rem;" onclick="startTest()">ابدأ الاختبار</button>
+      <button class="test-btn" style="width: 100%; margin-top: 1rem; justify-content: center;" onclick="startTest()">ابدأ الاختبار</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- نافذة عرض الحديث كاملاً مع التلوين المعتمد -->
 <div class="modal-overlay" id="modal" onclick="closeModalOnOverlay(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -740,9 +837,9 @@
     </div>
     <div class="modal-body">
       <div class="modal-id-badge" id="modal-id"></div>
-      <div class="hadith-content-text" id="modal-content"></div>
+      <div class="hadith-text-rendered" id="modal-content"></div>
       <div class="modal-rawy" id="modal-rawy"></div>
-      <div class="modal-hint-box">
+      <div class="modal-hint-box" id="modal-hint-container">
         <span class="modal-hint-label">✦ التلميح</span>
         <span id="modal-hint"></span>
       </div>
@@ -751,51 +848,106 @@
 </div>
 
 <script>
-/* ════════════════════════════════════════════════════════
-   ★  HADITH DATA FETCH  ★
-   ════════════════════════════════════════════════════════ */
 let HADITH_DATA = [];
-
-async function loadHadithData() {
-  try {
-    const res = await fetch('./hadith.json');
-    HADITH_DATA = await res.json();
-    renderBabs();
-  } catch (error) {
-    console.error("Error loading hadith data:", error);
-  }
-}
-/* ════════════════════════════════════════════════════════ */
-
 let BABS_ARRAY = [];
 let currentBabIndex = 0;
 
-/* Group by bab */
-function getBabs() {
-  const map = {};
-  HADITH_DATA.forEach(h => {
-    if (!map[h.bab_number]) {
-      map[h.bab_number] = { number: h.bab_number, name: h.bab_name, hadiths: [] };
-    }
-    map[h.bab_number].hadiths.push(h);
-  });
-  return Object.values(map).sort((a,b) => Number(a.number) - Number(b.number));
+/* تحميل البيانات من الملف المرفق */
+async function loadHadithData() {
+  try {
+    const res = await fetch('./hadith.json');
+    if (!res.ok) throw new Error('فشل جلب hadith.json: ' + res.statusText);
+    HADITH_DATA = await res.json();
+    processData();
+    renderBabs();
+  } catch (error) {
+    console.error("خطأ في قراءة البيانات:", error);
+  }
 }
 
-/* Render bab list */
+/* تجميع الأحاديث حسب الأبواب فقط دون تقسيم لمجموعات */
+function processData() {
+  const map = {};
+  HADITH_DATA.forEach(h => {
+    const bNum = h.bab_number || "1";
+    if (!map[bNum]) {
+      map[bNum] = {
+        number: bNum,
+        name: h.bab_name || ("الباب " + bNum),
+        hadiths: []
+      };
+    }
+    map[bNum].hadiths.push(h);
+  });
+  
+  BABS_ARRAY = Object.values(map).sort((a, b) => Number(a.number) - Number(b.number));
+}
+
+/* ── دالة التلوين المتقدمة للنصوص النبوية ── */
+function renderHadithHtml(content) {
+  if (!content) return '';
+
+  let hasHtmlTags = /<[a-z][\s\S]*>/i.test(content);
+  let html = content;
+
+  if (!hasHtmlTags) {
+    // 1. تلوين الآيات القرآنية بين ﴿...﴾ بالكحلي الغامق
+    html = html.replace(/﴿([^﴾]+)﴾/g, '<span class="quran-ayah">﴿$1﴾</span>');
+
+    // 2. تلوين السند في مستهل الحديث بالكحلي العريض
+    html = html.replace(/^([^\n:«»]+(?:رَضْيَ اللهُ عَنْهُ|رَضِيَ اللَّهُ عَنْهُ|رَضْيَ اللهُ عَنْهَا|رَضِيَ اللَّهُ عَنْهَا|رَضْيَ اللهُ عَنْهُمَا|رَضِيَ اللَّهُ عَنْهُمَا|رَضْيَ اللهُ عَنْهُمْ|رَضِيَ اللَّهُ عَنْهُمْ|ؓ)\s*[,،:]?\s*(?:قَالَ|قَالَتْ)?\s*[:،]?)/m, '<span class="auto-sanad">$1</span>');
+
+    // 3. تلوين الروايات الأخرى والزيادات المسبوقة بنجمة أو نقطة بالأحمر
+    html = html.replace(/(?:^|\n)([\*•]\s*\([^\)]+\))/g, '\n<span class="text-red">$1</span>');
+    html = html.replace(/(?:^|\n)([\*•]\s*وَفِي حَدِيثِ[^\n]+)/g, '\n<span class="text-red">$1</span>');
+
+    // 4. تلوين عبارات (وَفِي رِوَايَةٍ: ...) بالأحمر
+    html = html.replace(/([(\[][\s]*وَفِي رِوَايَةٍ[\s\S]*?[)\]])/g, '<span class="text-red">$1</span>');
+
+    // تحويل نهايات الأسطر إلى فواصل <br>
+    html = html.replace(/\n/g, '<br>');
+  } else {
+    html = html.replace(/([^>])\n/g, '$1<br>');
+  }
+
+  return html;
+}
+
+/* تجريد النص لمقارنة التسميع */
+function stripHtml(html) {
+  if (!html) return '';
+  let tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+/* التنقل بين الشاشات الرئيسية */
+function switchScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+/* عرض شبكة الأبواب */
 function renderBabs() {
-  BABS_ARRAY = getBabs();
-  const grid = document.getElementById('bab-grid');
+  const grid = document.getElementById('babs-grid');
   grid.innerHTML = '';
+  
   const testSelect = document.getElementById('test-start-bab');
-  if (testSelect) testSelect.innerHTML = '';
+  if (testSelect) {
+    testSelect.innerHTML = '<option value="all">جميع الأبواب (الكتاب كاملاً)</option>';
+  }
+  
   BABS_ARRAY.forEach((bab, index) => {
     const btn = document.createElement('button');
-    btn.className = 'bab-btn';
+    btn.className = 'card-btn';
     btn.innerHTML = `
-      <div class="bab-number">الباب ${toArabicNum(bab.number)}</div>
-      <div class="bab-name">${bab.name}</div>
-      <div class="bab-count">${toArabicNum(String(bab.hadiths.length))} أحاديث</div>
+      <div class="card-btn-subtitle">الباب ${toArabicNum(bab.number)}</div>
+      <div class="card-btn-title">${bab.name}</div>
+      <div class="card-btn-desc">${toArabicNum(String(bab.hadiths.length))} أحاديث</div>
     `;
     btn.onclick = () => showBab(index);
     grid.appendChild(btn);
@@ -803,10 +955,55 @@ function renderBabs() {
     if (testSelect) {
       const opt = document.createElement('option');
       opt.value = index;
-      opt.textContent = `الباب ${toArabicNum(bab.number)}: ${bab.name}`;
+      opt.textContent = `الباب ${toArabicNum(bab.number)}: ${bab.name.substring(0, 45)}...`;
       testSelect.appendChild(opt);
     }
   });
+}
+
+function showBab(index) {
+  currentBabIndex = index;
+  const bab = BABS_ARRAY[index];
+
+  document.getElementById('detail-bab-num').textContent = 'الباب ' + toArabicNum(bab.number);
+  document.getElementById('detail-bab-name').textContent = bab.name;
+
+  document.getElementById('prev-bab-btn').disabled = (index === 0);
+  document.getElementById('next-bab-btn').disabled = (index === BABS_ARRAY.length - 1);
+
+  const grid = document.getElementById('hadith-grid');
+  grid.innerHTML = '';
+
+  bab.hadiths.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'hadith-card';
+    
+    card.innerHTML = `
+      <div>
+        <div class="hadith-id-badge">حديث ${toArabicNum(h.id)}</div>
+        <div class="hadith-card-sahabi">
+          <span class="sahabi-prefix">عن</span>
+          ${h.sahabi || ''}
+        </div>
+        <div class="divider"></div>
+        <div class="hint-section">
+          <button class="hint-btn" id="hint-btn-${h.id}" onclick="showHint(event,'${h.id}')">✦ التلميح</button>
+          <button class="test-inline-btn" onclick="startSingleTest(event, '${h.id}')">اختبار</button>
+          <div class="hint-text-display" id="hint-text-${h.id}">${h.hint || ''}</div>
+        </div>
+      </div>
+      <div class="tap-hint">اضغط على البطاقة لعرض الحديث كاملاً</div>
+    `;
+
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.hint-btn') || e.target.closest('.test-inline-btn')) return;
+      openModal(h);
+    });
+
+    grid.appendChild(card);
+  });
+
+  switchScreen('screen-hadith');
 }
 
 function goPrevBab() {
@@ -821,72 +1018,35 @@ function goNextBab() {
   }
 }
 
-/* Render hadith cards for a bab */
-function showBab(index) {
-  currentBabIndex = index;
-  const bab = BABS_ARRAY[index];
-
-  document.getElementById('detail-bab-num').textContent = 'الباب ' + toArabicNum(bab.number);
-  document.getElementById('detail-bab-name').textContent = bab.name;
-
-  document.getElementById('prev-bab-btn').disabled = index === 0;
-  document.getElementById('next-bab-btn').disabled = index === BABS_ARRAY.length - 1;
-
-  const grid = document.getElementById('hadith-grid');
-  grid.innerHTML = '';
-
-  bab.hadiths.forEach(h => {
-    const card = document.createElement('div');
-    card.className = 'hadith-card';
-    card.innerHTML = `
-      <div class="hadith-id-badge">حديث ${toArabicNum(h.id)}</div>
-      <div class="hadith-card-sahabi">
-        <span class="sahabi-prefix">عن</span>
-        ${h.sahabi}
-      </div>
-      <div class="divider"></div>
-      <div class="hint-section">
-        <button class="hint-btn" id="hint-btn-${h.id}" onclick="showHint(event,'${h.id}')">تلميح</button>
-        <div class="hint-text-display" id="hint-text-${h.id}">${h.hint}</div>
-      </div>
-      <div class="tap-hint">اضغط على البطاقة لعرض الحديث كاملاً</div>
-    `;
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('hint-btn')) return;
-      openModal(h);
-    });
-    grid.appendChild(card);
-  });
-
-  document.getElementById('screen-babs').classList.remove('active');
-  document.getElementById('screen-hadith').classList.add('active');
-  window.scrollTo(0, 0);
+function goBackToBabs() {
+  switchScreen('screen-babs');
 }
 
 function showHint(event, id) {
   event.stopPropagation();
   const btn = document.getElementById('hint-btn-' + id);
   const txt = document.getElementById('hint-text-' + id);
-  txt.classList.add('shown');
-  btn.disabled = true;
-  btn.style.background = 'var(--gold-pale)';
-  btn.style.color = 'var(--gold)';
-  btn.style.borderStyle = 'dashed';
-  btn.textContent = '✦ التلميح';
+  if (txt) txt.classList.add('shown');
+  if (btn) btn.disabled = true;
 }
 
-function goBack() {
-  document.getElementById('screen-hadith').classList.remove('active');
-  document.getElementById('screen-babs').classList.add('active');
-  window.scrollTo(0, 0);
-}
-
+/* ── النافذة المنبثقة للحديث ── */
 function openModal(h) {
-  document.getElementById('modal-sahabi').textContent = h.sahabi;
+  document.getElementById('modal-sahabi').textContent = h.sahabi || '';
   document.getElementById('modal-id').textContent = 'حديث ' + toArabicNum(h.id);
-  document.getElementById('modal-content').textContent = h.content;
-  document.getElementById('modal-rawy').textContent = h.rawy;
-  document.getElementById('modal-hint').textContent = h.hint;
+  
+  const contentEl = document.getElementById('modal-content');
+  contentEl.innerHTML = renderHadithHtml(h.content);
+  
+  document.getElementById('modal-rawy').textContent = (h.rawy ? h.rawy + ' — ' : '') + h.bab_name;
+  
+  if (h.hint) {
+    document.getElementById('modal-hint-container').style.display = 'block';
+    document.getElementById('modal-hint').textContent = h.hint;
+  } else {
+    document.getElementById('modal-hint-container').style.display = 'none';
+  }
+
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -907,21 +1067,19 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ════════════════════════════════════════════════════════
-   ★  TEST LOGIC  ★
-   ════════════════════════════════════════════════════════ */
+/* ── منطق الاختبار والتسميع الذكي ── */
 let testMode = 'sequential';
 let testAnswerMethod = 'without_writing';
 let testFrontMode = 'show';
-let currentTestBabIndex = 0;
 let currentTestHadiths = [];
 let currentTestHadithIndex = 0;
 let isAnswerRevealed = false;
+let previousScreenBeforeTest = 'screen-babs';
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
@@ -938,58 +1096,77 @@ function closeTestModalOnOverlay(e) {
 }
 
 function exitTest() {
-  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-  document.getElementById('screen-babs').classList.add('active');
-  window.scrollTo(0, 0);
+  switchScreen(previousScreenBeforeTest);
 }
 
 function startTest() {
+  previousScreenBeforeTest = 'screen-babs';
   testMode = document.getElementById('test-mode').value;
   testAnswerMethod = document.getElementById('test-answer-method').value;
   testFrontMode = document.getElementById('test-front-type').value;
-  currentTestBabIndex = parseInt(document.getElementById('test-start-bab').value);
-  closeTestModal();
-  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-  document.getElementById('screen-test').classList.add('active');
-  window.scrollTo(0, 0);
-  loadTestBab();
-}
+  
+  const scopeVal = document.getElementById('test-start-bab').value;
+  if (scopeVal === 'all') {
+    currentTestHadiths = [...HADITH_DATA];
+  } else {
+    const babIdx = parseInt(scopeVal, 10);
+    currentTestHadiths = [...BABS_ARRAY[babIdx].hadiths];
+  }
 
-function loadTestBab() {
-  const bab = BABS_ARRAY[currentTestBabIndex];
-  currentTestHadiths = [...bab.hadiths];
   if (testMode === 'random') {
     shuffleArray(currentTestHadiths);
   }
+
   currentTestHadithIndex = 0;
+  closeTestModal();
+  switchScreen('screen-test');
+  renderTestCard();
+}
+
+/* بدء اختبار فردي لحديث معين من بطاقته مباشرة */
+function startSingleTest(event, id) {
+  event.stopPropagation();
+  const h = HADITH_DATA.find(hadith => String(hadith.id) === String(id));
+  if (!h) return;
+
+  previousScreenBeforeTest = 'screen-hadith';
+  testMode = 'sequential';
+  testAnswerMethod = 'with_writing';
+  testFrontMode = 'show';
+  
+  currentTestHadiths = [h];
+  currentTestHadithIndex = 0;
+  
+  switchScreen('screen-test');
   renderTestCard();
 }
 
 function renderTestCard() {
   const h = currentTestHadiths[currentTestHadithIndex];
-  const bab = BABS_ARRAY[currentTestBabIndex];
   isAnswerRevealed = false;
 
-  document.getElementById('test-bab-title').textContent = 'الباب ' + toArabicNum(bab.number) + ' - ' + bab.name;
+  document.getElementById('test-bab-title').textContent = h.bab_name || '';
   document.getElementById('test-progress').textContent = 'الحديث ' + toArabicNum(currentTestHadithIndex + 1) + ' من ' + toArabicNum(currentTestHadiths.length);
 
   let frontHtml = '';
   if (testFrontMode === 'show') {
     frontHtml = `
-      <div class="hadith-card-sahabi" style="padding:0; margin-bottom:1rem;"><span class="sahabi-prefix">عن</span> ${h.sahabi}</div>
-      <div class="divider" style="margin: 1.5rem auto; width: 60px;"></div>
-      <button class="hint-btn" onclick="event.stopPropagation(); document.getElementById('test-card-hint').style.display='block'; this.style.display='none';">تلميح</button>
-      <div id="test-card-hint" class="hint-text-display" style="display:none; margin-top: 1.5rem; text-align: center;">${h.hint}</div>
+      <div class="hadith-card-sahabi" style="padding:0; margin-bottom:1rem; text-align:center;">
+        <span class="sahabi-prefix">عن</span> ${h.sahabi || ''}
+      </div>
+      <div class="divider" style="margin: 1.2rem auto; width: 80px;"></div>
+      <button class="hint-btn" onclick="event.stopPropagation(); document.getElementById('test-card-hint').style.display='block'; this.style.display='none';">✦ التلميح</button>
+      <div id="test-card-hint" class="hint-text-display" style="display:none; margin: 1.5rem auto 0; text-align: center; max-width: 600px;">${h.hint || ''}</div>
     `;
   } else {
-    frontHtml = `<div class="hint-text-display" style="display:block; font-size: 1.2rem; background:transparent; border:none; text-align:center;">${h.hint}</div>`;
+    frontHtml = `<div class="hint-text-display" style="display:block; font-size: 1.25rem; background:transparent; border:none; text-align:center; line-height:2;">${h.hint || ''}</div>`;
   }
   document.getElementById('test-card-front').innerHTML = frontHtml;
 
   document.getElementById('test-card-back').innerHTML = `
-    <div style="font-size: 1.15rem; color: var(--emerald); font-weight: bold; margin-bottom: 0.3rem;">${h.sahabi}</div>
-    <div style="font-size: 0.85rem; color: var(--gold); margin-bottom: 1.5rem;">${h.rawy}</div>
-    <div style="font-size: 1.4rem; line-height: 2; color: var(--ink); text-align: justify; margin-bottom: 1rem;">${h.content}</div>
+    <div style="font-size: 1.25rem; color: var(--emerald); font-weight: bold; margin-bottom: 0.3rem;">عن ${h.sahabi || ''}</div>
+    <div style="font-size: 0.9rem; color: var(--gold); margin-bottom: 1.2rem;">حديث ${toArabicNum(h.id)} ${h.rawy ? ' — ' + h.rawy : ''}</div>
+    <div class="hadith-text-rendered">${renderHadithHtml(h.content)}</div>
   `;
 
   document.getElementById('test-card-front').style.display = 'block';
@@ -1021,12 +1198,13 @@ function evaluateWriting() {
   const h = currentTestHadiths[currentTestHadithIndex];
   const submitted = document.getElementById('test-writing-input').value;
   
-  const diff = getWordDiff(h.content, submitted);
+  const rawOriginal = stripHtml(h.content);
+  const diff = getWordDiff(rawOriginal, submitted);
   const diffHtml = renderDiffHTML(diff);
   
   document.getElementById('test-correction-result').innerHTML = `
-    <div style="font-size:0.9rem; color:var(--emerald); font-weight:bold; margin-bottom:0.5rem;">إجابتك بعد التصحيح:</div>
-    <div>${diffHtml}</div>
+    <div style="font-size:1.05rem; color:var(--emerald); font-weight:bold; margin-bottom:0.8rem;">إجابتك بعد المقارنة:</div>
+    <div style="line-height:2.2;">${diffHtml}</div>
   `;
   document.getElementById('test-correction-result').style.display = 'block';
   document.getElementById('test-writing-section').style.display = 'none';
@@ -1034,23 +1212,34 @@ function evaluateWriting() {
   revealTestAnswer();
 }
 
+/* توحيد الحروف وحذف التشكيل والزوائد لضمان المقارنة الدقيقة */
 function normalizeArabic(text) {
   if (!text) return '';
-  let t = text.replace(/[\u0617-\u061A\u064B-\u0652]/g, '');
-  t = t.replace(/[أإآ]/g, 'ا');
+  let t = text.replace(/[\u0617-\u061A\u064B-\u0652\u0670]/g, '');
+  t = t.replace(/[أإآٱ]/g, 'ا');
   t = t.replace(/ة/g, 'ه');
-  t = t.replace(/ى/g, 'ي');
-  return t;
+  t = t.replace(/[ىي]/g, 'ي');
+  t = t.replace(/[\u0640]/g, '');
+  t = t.replace(/[\u0600-\u0605\u0610-\u0615\u06D6-\u06ED]/g, '');
+  return t.trim();
+}
+
+function cleanTokens(text) {
+  return text.replace(/[،.؛:()«»"'؟!?\-–—﴿﴾\[\]*~•]/g, ' ')
+             .trim()
+             .split(/\s+/)
+             .filter(Boolean);
 }
 
 function getWordDiff(original, submitted) {
-  const origWords = original.replace(/[،.؛:()«»"']/g, ' ').trim().split(/\s+/).filter(w => w);
-  const subWords = submitted.replace(/[،.؛:()«»"']/g, ' ').trim().split(/\s+/).filter(w => w);
+  const origWords = cleanTokens(original);
+  const subWords = cleanTokens(submitted);
   
   const normOriginal = origWords.map(normalizeArabic);
   const normSubmitted = subWords.map(normalizeArabic);
   
   const dp = Array(normOriginal.length + 1).fill(null).map(() => Array(normSubmitted.length + 1).fill(0));
+  
   for (let i = 1; i <= normOriginal.length; i++) {
     for (let j = 1; j <= normSubmitted.length; j++) {
       if (normOriginal[i - 1] === normSubmitted[j - 1]) {
@@ -1064,6 +1253,7 @@ function getWordDiff(original, submitted) {
   let i = normOriginal.length;
   let j = normSubmitted.length;
   const result = [];
+  
   while (i > 0 || j > 0) {
     if (i > 0 && j > 0 && normOriginal[i - 1] === normSubmitted[j - 1]) {
       result.unshift({ type: 'equal', value: subWords[j - 1] });
@@ -1088,7 +1278,7 @@ function renderDiffHTML(diff) {
   const flushRemoved = () => {
     if (removedBuffer.length > 0) {
       const tooltip = removedBuffer.join(' ');
-      html += ` <span class="diff-removed" title="${tooltip}">❌</span> `;
+      html += ` <span class="diff-removed" onclick="this.classList.toggle('expanded')" title="اضغط لإظهار ما نقص"><span class="diff-removed-icon">❌</span><span class="diff-removed-text">${tooltip}</span></span> `;
       removedBuffer = [];
     }
   };
@@ -1120,13 +1310,8 @@ function revealTestAnswer() {
   const isLast = (currentTestHadithIndex === currentTestHadiths.length - 1);
   const nextBtn = document.getElementById('test-next-btn');
   if (isLast) {
-    if (currentTestBabIndex === BABS_ARRAY.length - 1) {
-      nextBtn.textContent = 'إنهاء الاختبار';
-      nextBtn.onclick = exitTest;
-    } else {
-      nextBtn.textContent = 'الباب التالي \u2190';
-      nextBtn.onclick = () => { currentTestBabIndex++; loadTestBab(); };
-    }
+    nextBtn.textContent = 'إنهاء الاختبار';
+    nextBtn.onclick = exitTest;
   } else {
     nextBtn.textContent = 'الحديث التالي \u2190';
     nextBtn.onclick = nextTestHadith;
@@ -1142,8 +1327,8 @@ function retryTestHadith() {
   renderTestCard();
 }
 
-function toggleRawy() {
-  const val = document.getElementById('rawy-toggle').value;
+function toggleFrontView() {
+  const val = document.getElementById('front-toggle').value;
   if (val === 'hide') {
     document.body.classList.add('hide-rawy');
   } else {
