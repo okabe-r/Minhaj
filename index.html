@@ -27,6 +27,11 @@
     --book-red: #c00000;    /* الروايات الأخرى، الزيادات، التعليقات */
     --book-navy: #002060;   /* السند، الصحابي، الآيات القرآنية */
     --book-blue: #0070c0;   /* الروايات الفرعية والألفاظ المخصوصة */
+
+    /* ألوان شريط الحجب المطابقة للصورة */
+    --btn-mask-green: #175438;
+    --btn-mask-gold: #b37d0c;
+    --btn-mask-slate: #606b79;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -356,15 +361,9 @@
     gap: 0.3rem;
   }
 
-  .hint-btn:hover:not(:disabled) {
+  .hint-btn:hover {
     background: var(--gold);
     color: #fff;
-  }
-
-  .hint-btn:disabled {
-    cursor: default;
-    background: var(--gold-pale);
-    border-style: dashed;
   }
 
   .test-inline-btn {
@@ -379,11 +378,32 @@
     cursor: pointer;
     transition: all 0.2s;
     display: inline-block;
-    margin-left: 0.5rem;
+    margin-right: 0.4rem;
   }
 
   .test-inline-btn:hover {
     background: var(--emerald);
+    color: #fff;
+  }
+
+  /* زر الحجب في البطاقة */
+  .mask-inline-btn {
+    background: #f0f4f8;
+    border: 1px solid var(--btn-mask-slate);
+    color: #3b4554;
+    font-family: 'Amiri', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.35rem 1.1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+    margin-right: 0.4rem;
+  }
+
+  .mask-inline-btn:hover {
+    background: var(--btn-mask-slate);
     color: #fff;
   }
 
@@ -467,6 +487,100 @@
   .auto-sanad {
     color: var(--book-navy);
     font-weight: bold;
+  }
+
+  /* ── شريط وأدوات شاشة الحجب (Mask Screen) ── */
+  .mask-toolbar-container {
+    position: sticky;
+    top: 15px;
+    z-index: 100;
+    margin-bottom: 1.8rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mask-toolbar-pill {
+    background: #f7f1e3;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 0.75rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    box-shadow: 0 6px 20px rgba(44, 26, 14, 0.12);
+    flex-wrap: wrap;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .mask-btn {
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    padding: 0.55rem 1.4rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .mask-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.22);
+  }
+
+  .mask-btn:active {
+    transform: translateY(0);
+  }
+
+  .mask-btn-green {
+    background-color: var(--btn-mask-green);
+  }
+
+  .mask-btn-gold {
+    background-color: var(--btn-mask-gold);
+  }
+
+  .mask-btn-slate {
+    background-color: var(--btn-mask-slate);
+  }
+
+  /* تنسيق الكلمات المحجوبة */
+  .masked-word {
+    display: inline;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.25s ease, background-color 0.25s ease, opacity 0.25s ease;
+    padding: 0.05rem 0.15rem;
+  }
+
+  .masked-word.is-masked {
+    filter: blur(6.5px);
+    -webkit-filter: blur(6.5px);
+    user-select: none;
+    -webkit-user-select: none;
+    opacity: 0.55;
+    background-color: rgba(44, 26, 14, 0.08);
+  }
+
+  .masked-word.is-masked:hover {
+    filter: blur(4.5px);
+    -webkit-filter: blur(4.5px);
+    opacity: 0.85;
+    background-color: rgba(218, 165, 32, 0.25);
+  }
+
+  .masked-word:not(.is-masked) {
+    filter: none;
+    -webkit-filter: none;
+    opacity: 1;
+    background-color: transparent;
   }
 
   /* ── النافذة المنبثقة لعرض الحديث ── */
@@ -711,6 +825,8 @@
     .grid-layout { grid-template-columns: 1fr; }
     .modal-body { padding: 1.2rem; }
     .hadith-text-rendered { font-size: 1.15rem; line-height: 2; }
+    .mask-toolbar-pill { padding: 0.5rem 0.6rem; gap: 0.4rem; }
+    .mask-btn { font-size: 0.95rem; padding: 0.45rem 0.8rem; }
   }
 </style>
 </head>
@@ -784,6 +900,36 @@
     <div id="test-actions" style="display: none; justify-content: center; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
       <button class="nav-btn" style="background: var(--gold); color: var(--ink);" onclick="retryTestHadith()">أعد الحديث</button>
       <button class="nav-btn" id="test-next-btn" onclick="nextTestHadith()">الحديث التالي &#x2190;</button>
+    </div>
+  </div>
+
+  <!-- الشاشة 4: شاشة حجب الحديث وتسميعه تدريجياً (Mask Screen) -->
+  <div id="screen-mask" class="screen">
+    <!-- شريط الأزرار العلوي المثبت -->
+    <div class="mask-toolbar-container">
+      <div class="mask-toolbar-pill">
+        <button class="mask-btn mask-btn-green" onclick="maskRevealWord(1)">كشف كلمة</button>
+        <button class="mask-btn mask-btn-green" onclick="maskRevealWord(5)">كشف ٥ كلمات</button>
+        <button class="mask-btn mask-btn-green" onclick="maskRevealAll()">كشف الكل</button>
+        <button class="mask-btn mask-btn-gold" onclick="maskReset()">إعادة الحجب</button>
+        <button class="mask-btn mask-btn-slate" onclick="exitMaskScreen()">العودة للأحاديث</button>
+      </div>
+    </div>
+
+    <div class="title-bar">
+      <div class="title-bar-label" id="mask-bab-num"></div>
+      <div class="title-bar-name" id="mask-bab-name"></div>
+    </div>
+
+    <div class="hadith-card" style="cursor: default; padding: 2rem 2.2rem; margin: 0 auto; max-width: 900px; box-shadow: 0 4px 20px var(--shadow);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="font-size: 1.3rem; font-weight: 700; color: var(--emerald);" id="mask-sahabi"></div>
+        <div class="modal-id-badge" style="position: static;" id="mask-id-badge"></div>
+      </div>
+
+      <div class="hadith-text-rendered" id="mask-hadith-content" style="min-height: 140px;"></div>
+
+      <div class="modal-rawy" id="mask-rawy"></div>
     </div>
   </div>
 
@@ -987,8 +1133,9 @@ function showBab(index) {
         </div>
         <div class="divider"></div>
         <div class="hint-section">
-          <button class="hint-btn" id="hint-btn-${h.id}" onclick="showHint(event,'${h.id}')">✦ التلميح</button>
+          <button class="hint-btn" id="hint-btn-${h.id}" onclick="toggleHint(event,'${h.id}')">✦ التلميح</button>
           <button class="test-inline-btn" onclick="startSingleTest(event, '${h.id}')">اختبار</button>
+          <button class="mask-inline-btn" onclick="startMaskScreen(event, '${h.id}')">حجب</button>
           <div class="hint-text-display" id="hint-text-${h.id}">${h.hint || ''}</div>
         </div>
       </div>
@@ -996,7 +1143,7 @@ function showBab(index) {
     `;
 
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.hint-btn') || e.target.closest('.test-inline-btn')) return;
+      if (e.target.closest('.hint-btn') || e.target.closest('.test-inline-btn') || e.target.closest('.mask-inline-btn')) return;
       openModal(h);
     });
 
@@ -1022,12 +1169,13 @@ function goBackToBabs() {
   switchScreen('screen-babs');
 }
 
-function showHint(event, id) {
+/* التعديل رقم 1: إظهار وإخفاء التلميح بالتبادل (Toggle) */
+function toggleHint(event, id) {
   event.stopPropagation();
-  const btn = document.getElementById('hint-btn-' + id);
   const txt = document.getElementById('hint-text-' + id);
-  if (txt) txt.classList.add('shown');
-  if (btn) btn.disabled = true;
+  if (txt) {
+    txt.classList.toggle('shown');
+  }
 }
 
 /* ── النافذة المنبثقة للحديث ── */
@@ -1064,6 +1212,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeModal();
     if (typeof closeTestModal === 'function') closeTestModal();
+    if (document.getElementById('screen-mask').classList.contains('active')) {
+      exitMaskScreen();
+    }
   }
 });
 
@@ -1155,7 +1306,7 @@ function renderTestCard() {
         <span class="sahabi-prefix">عن</span> ${h.sahabi || ''}
       </div>
       <div class="divider" style="margin: 1.2rem auto; width: 80px;"></div>
-      <button class="hint-btn" onclick="event.stopPropagation(); document.getElementById('test-card-hint').style.display='block'; this.style.display='none';">✦ التلميح</button>
+      <button class="hint-btn" onclick="event.stopPropagation(); const hEl=document.getElementById('test-card-hint'); hEl.style.display = (hEl.style.display==='block'?'none':'block');">✦ التلميح</button>
       <div id="test-card-hint" class="hint-text-display" style="display:none; margin: 1.5rem auto 0; text-align: center; max-width: 600px;">${h.hint || ''}</div>
     `;
   } else {
@@ -1338,6 +1489,129 @@ function toggleFrontView() {
 
 function toArabicNum(str) {
   return String(str).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+/* ═════════════════════════════════════════════════════════════
+   التعديل رقم 2: منطق شاشة حجب الحديث والتسميع التدريجي
+   ═════════════════════════════════════════════════════════════ */
+let totalMaskedWords = 0;
+let revealedWordCount = 0;
+
+function startMaskScreen(event, id) {
+  if (event) event.stopPropagation();
+  const h = HADITH_DATA.find(hadith => String(hadith.id) === String(id));
+  if (!h) return;
+
+  document.getElementById('mask-bab-num').textContent = 'الباب ' + toArabicNum(h.bab_number || '1');
+  document.getElementById('mask-bab-name').textContent = h.bab_name || '';
+  document.getElementById('mask-sahabi').textContent = 'عن ' + (h.sahabi || '');
+  document.getElementById('mask-id-badge').textContent = 'حديث ' + toArabicNum(h.id);
+  document.getElementById('mask-rawy').textContent = (h.rawy ? h.rawy + ' — ' : '') + (h.bab_name || '');
+
+  const renderedFormatted = renderHadithHtml(h.content);
+  const container = document.getElementById('mask-hadith-content');
+  
+  // تحويل النص إلى كلمات محجوبة مع الحفاظ على التلوين والأسطر
+  prepareMaskedWords(container, renderedFormatted);
+
+  revealedWordCount = 0;
+  updateMaskedDisplay();
+  switchScreen('screen-mask');
+}
+
+function exitMaskScreen() {
+  switchScreen('screen-hadith');
+}
+
+/* تجهيز الكلمات داخل شجرة DOM بحيث تُلف كل كلمة بوسم masked-word */
+function prepareMaskedWords(container, html) {
+  container.innerHTML = html;
+  totalMaskedWords = 0;
+
+  function traverse(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.nodeValue;
+      if (!text || !text.trim()) return;
+
+      const tokens = text.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+
+      tokens.forEach(tok => {
+        if (!tok) return;
+        if (/^\s+$/.test(tok)) {
+          frag.appendChild(document.createTextNode(tok));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'masked-word is-masked';
+          span.dataset.index = totalMaskedWords++;
+          span.textContent = tok;
+          frag.appendChild(span);
+        }
+      });
+
+      node.parentNode.replaceChild(frag, node);
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      Array.from(node.childNodes).forEach(child => traverse(child));
+    }
+  }
+
+  traverse(container);
+}
+
+/* الكشف بالنقر المباشر على أي كلمة (يكشف الكلمة وكل ما قبلها) */
+document.getElementById('mask-hadith-content').addEventListener('click', (e) => {
+  const target = e.target.closest('.masked-word');
+  if (!target) return;
+  const idx = parseInt(target.dataset.index, 10);
+  if (!isNaN(idx)) {
+    revealedWordCount = Math.max(revealedWordCount, idx + 1);
+    updateMaskedDisplay();
+  }
+});
+
+/* كشف كلمة واحدة أو عدد محدد من الكلمات */
+function maskRevealWord(count = 1) {
+  revealedWordCount = Math.min(totalMaskedWords, revealedWordCount + count);
+  updateMaskedDisplay();
+  scrollRevealedWordIntoView(revealedWordCount - 1);
+}
+
+/* كشف كامل الحديث */
+function maskRevealAll() {
+  revealedWordCount = totalMaskedWords;
+  updateMaskedDisplay();
+}
+
+/* إعادة حجب الحديث كاملاً */
+function maskReset() {
+  revealedWordCount = 0;
+  updateMaskedDisplay();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* تحديث حالة الكلمات المحجوبة والمكشوفة في الصفحة */
+function updateMaskedDisplay() {
+  const words = document.querySelectorAll('#mask-hadith-content .masked-word');
+  words.forEach(w => {
+    const idx = parseInt(w.dataset.index, 10);
+    if (idx < revealedWordCount) {
+      w.classList.remove('is-masked');
+    } else {
+      w.classList.add('is-masked');
+    }
+  });
+}
+
+/* التمرير السلس نحو الكلمة المكشوفة حديثاً إن كانت خارج مجال الرؤية */
+function scrollRevealedWordIntoView(idx) {
+  if (idx < 0) return;
+  const wordEl = document.querySelector(`#mask-hadith-content .masked-word[data-index="${idx}"]`);
+  if (wordEl) {
+    const rect = wordEl.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 50 || rect.top < 120) {
+      wordEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
 }
 
 loadHadithData();
